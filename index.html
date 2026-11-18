@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Performance de Novembro · Boom</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Performance comercial — fundo branco, verde sofisticado, Fraunces + Inter. KPIs, tabelas comparativas, gráficos interativos. Tema claro. */
+:root{
+  color-scheme:light;
+  --bg:#ffffff; --bg-alt:#f6f8f4; --surface:#ffffff; --ink:#1b2620; --muted:#64706a;
+  --line:#e6eae1; --line-2:#eef1ea; --pine:#1f5b3c; --pine-ink:#184a30; --sage:#8aae96; --sage-soft:#eef4ec;
+  --good:#1f7a4d; --warn:#9a6a16; --warn-bg:#f8efd9; --crit:#a8392a; --crit-bg:#f8e7e2;
+  --shadow:0 1px 2px rgba(27,42,34,.04),0 10px 30px rgba(27,42,34,.05);
+  --serif:"Fraunces",Georgia,"Times New Roman",serif; --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.58;font-size:15.5px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--serif);font-weight:560;text-wrap:balance;line-height:1.1;margin:0;color:var(--pine-ink)}
+h2{font-size:clamp(1.55rem,3.4vw,2.2rem);letter-spacing:-.012em;margin-bottom:.1em}
+h3{font-size:1.1rem;font-weight:600;color:var(--ink)}
+p{margin:.5em 0}
+.eyebrow{font-family:var(--sans);font-weight:700;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--pine)}
+.lede{color:var(--muted);font-size:1.03rem;max-width:68ch}
+.sticky{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.sticky .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:11px}
+.sticky b{font-family:var(--serif);font-weight:600;color:var(--pine-ink)}
+.tag{font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+section{padding-block:40px;border-top:1px solid var(--line)}
+section.alt{background:var(--bg-alt)}
+.hero{padding-block:52px 30px}
+.hero h1{font-size:clamp(2.4rem,6vw,4rem);letter-spacing:-.022em;margin:.14em 0 .2em}
+.hero .sub{display:flex;gap:10px 22px;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin-top:16px}
+.hero .sub b{color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:20px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 17px;box-shadow:var(--shadow)}
+.kpi .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.kpi .v{font-family:var(--serif);font-size:1.9rem;font-weight:560;margin-top:5px;font-variant-numeric:tabular-nums;color:var(--pine-ink)}
+.kpi .d{font-size:.8rem;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
+.delta{font-weight:700;font-variant-numeric:tabular-nums}
+.up{color:var(--good)}.down{color:var(--crit)}.flat{color:var(--warn)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:18px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-width:0}
+.panel.good{border-left:3px solid var(--good)} .panel.warn{border-left:3px solid var(--warn)}
+.panel h3{margin-bottom:8px} .panel ol,.panel ul{margin:.3em 0 0;padding-left:20px;font-size:.93rem} .panel li{margin:.45em 0}
+.big{font-family:var(--serif);font-size:1.5rem;color:var(--pine-ink);font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);background:var(--surface);margin-top:16px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numeric:tabular-nums}
+th,td{padding:10px 13px;text-align:right;border-bottom:1px solid var(--line-2);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal;min-width:150px}
+thead th{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;background:var(--bg-alt)}
+tbody tr:last-child td{border-bottom:0}
+tr.total td{font-weight:700;background:var(--sage-soft)}
+.pos{color:var(--good);font-weight:650}.neg{color:var(--crit);font-weight:650}
+.chartcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);margin-top:16px}
+.chartcard svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:16px;font-size:.82rem;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.hint{font-size:.76rem;color:var(--muted);margin-top:4px}
+.note{background:var(--sage-soft);border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:.88rem;margin-top:16px}
+.note.warn{background:var(--warn-bg)}
+.muted{color:var(--muted)}
+.q{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.q .item{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--sage);border-radius:0 12px 12px 0;padding:14px 16px;box-shadow:var(--shadow)}
+.q .item p{margin:.2em 0;font-size:.92rem} .q .item .ask{font-weight:650;color:var(--pine-ink)}
+/* barras interativas */
+.bar{transition:opacity .12s} .bar:hover{opacity:.82;cursor:pointer}
+.hotzone{fill:transparent;cursor:pointer}
+#tip{position:fixed;z-index:60;max-width:270px;background:#12201a;color:#fff;border-radius:12px;padding:11px 13px;font-size:.8rem;line-height:1.45;box-shadow:0 8px 30px rgba(0,0,0,.28);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
+#tip.on{opacity:1;transform:translateY(0)}
+#tip .tt{font-weight:700;font-size:.82rem;margin-bottom:5px;color:#cfe7d8}
+#tip .row{display:flex;justify-content:space-between;gap:14px;font-variant-numeric:tabular-nums}
+#tip .row span:last-child{font-weight:600}
+#tip .ex{margin-top:6px;color:#b9c7bf;font-size:.74rem}
+#tip .vv{color:#8fe0ad;font-weight:700}
+@media (max-width:760px){.two,.q,.three{grid-template-columns:1fr}}
+
+.selo{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:99px;padding:2px 8px;margin-right:6px;vertical-align:1px}
+.selo.fato{background:#e3efe6;color:#1f5b3c}.selo.calc{background:#e6ecf5;color:#2c4a73}.selo.hip{background:#f8efd9;color:#7a5410}.selo.lac{background:#f3e3df;color:#8c2f22}
+.hyp{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);margin-top:14px}
+.hyp h3{margin-bottom:6px}.hyp .g{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:.9rem}.hyp .g div{min-width:0}
+.hyp .g b{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:2px}
+.recs{counter-reset:r;list-style:none;padding:0;margin:16px 0 0}
+.recs li{counter-increment:r;position:relative;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px 56px;margin-top:10px;box-shadow:var(--shadow);font-size:.93rem}
+.recs li:before{content:counter(r);position:absolute;left:16px;top:13px;width:28px;height:28px;border-radius:50%;background:var(--pine);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.recs li b.t{display:block;color:var(--pine-ink);font-size:1rem;margin-bottom:2px}
+footer{padding:34px 0 50px;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+@media (max-width:760px){.hyp .g{grid-template-columns:1fr}.kpi .v{font-size:1.6rem}}
+@media print{.sticky,#tip{display:none}section{break-inside:avoid-page}}
+</style>
+</head><body>
+<div class="sticky"><div class="wrap"><b>Boom — Performance de novembro</b><span class="tag">parcial · 01 a 18/11/2026</span></div></div>
+<div id="tip" role="status" aria-live="polite"></div>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Relatório da loja · Novembro de 2026 · mês em andamento</div>
+  <h1>O lançamento do Body Splash Boom</h1>
+  <p class="lede">A Boom relançou a loja com uma linha nova: o <b>Body Splash Boom 200 ml</b>, em quatro aromas (Vênus, Solar, Lua e Saturno). Este relatório olha só para novembro, de <b>1 a 18/11</b> (dados extraídos em 18/11, às 08h33). <b>O mês ainda não fechou</b> e os números não são comparados com o período em que a loja vendia camisetas, porque são operações diferentes.</p>
+  <div class="sub"><span>💡 Passe o mouse (ou toque, no celular) nos gráficos para ver os detalhes de cada número.</span></div>
+  <div class="sub"><span><span class="selo fato">Fato</span> lido nos relatórios da plataforma ou do Analytics</span><span><span class="selo calc">Cálculo</span> conta feita sobre esses dados</span><span><span class="selo hip">Hipótese</span> explicação possível, ainda não provada</span><span><span class="selo lac">Lacuna</span> dado que não existe ou não foi possível obter</span></div>
+</header>
+
+<section data-secao="resumo">
+  <div class="eyebrow">Resumo de novembro</div>
+  <h2>O mês em números</h2>
+  <p class="lede">Os valores de venda vêm da <b>Magazord</b> (a plataforma da loja). "Não cancelado" é o pedido que está em nota fiscal emitida, em transporte ou entregue. O comportamento das visitas vem do <b>Google Analytics</b>, de 1 a 17/11.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="k">Pedidos não cancelados</div><div class="v">735</div><div class="d">de 835 registrados no período</div></div>
+    <div class="kpi"><div class="k">Valor dos pedidos não cancelados</div><div class="v">R$ 96.140,04</div><div class="d">valor total registrado: R$ 109.129,42</div></div>
+    <div class="kpi"><div class="k">Valor médio por pedido</div><div class="v">R$ 130,80</div><div class="d">pedidos não cancelados</div></div>
+    <div class="kpi"><div class="k">Body Splash vendidos</div><div class="v">2.589 un.</div><div class="d">R$ 85.438,49 no relatório de produtos</div></div>
+    <div class="kpi"><div class="k">Pedidos cancelados</div><div class="v">12,0%</div><div class="d">100 pedidos · R$ 12.989,38</div></div>
+    <div class="kpi"><div class="k">Sessões no site</div><div class="v">9.380</div><div class="d">1 a 17/11 · 96,0% no celular</div></div>
+  </div>
+  <div class="two">
+    <div class="panel good"><h3>O que foi bem</h3><ul>
+      <li><span class="selo fato">Fato</span> O lançamento de <b>10/11</b> gerou <b>707 pedidos</b> em um dia. O primeiro saiu às 12h39; nos primeiros 10 minutos foram <b>110</b> e na primeira hora, <b>274</b>.</li>
+      <li><span class="selo calc">Cálculo</span> Em 10/11, <b>13,6%</b> das sessões terminaram em compra no Analytics, uma taxa muito alta para e-commerce. Isso indica um público que já chegou pronto para comprar.</li>
+      <li><span class="selo fato">Fato</span> A procura ficou bem dividida entre os aromas: Vênus, Solar e Lua venderam entre 681 e 706 unidades cada.</li>
+      <li><span class="selo fato">Fato</span> A conta de anúncios da Meta da Boom não registrou investimento em novembro, e nenhuma compra veio de tráfego marcado como anúncio: o volume veio do Instagram, de acessos diretos e da busca.</li>
+    </ul></div>
+    <div class="panel warn"><h3>O que merece atenção</h3><ul>
+      <li><span class="selo fato">Fato</span> Os quatro Body Splash estão <b>indisponíveis</b>: restam 7 unidades no total, e Saturno está zerado.</li>
+      <li><span class="selo calc">Cálculo</span> <b>96,6%</b> dos pedidos do mês ocorreram em 10 e 11/11. De 12 a 17/11 o site ainda teve 2.076 sessões, mas só 24 compras.</li>
+      <li><span class="selo fato">Fato</span> <b>100</b> pedidos (12,0%) foram cancelados no pagamento, somando R$ 12.989,38.</li>
+      <li><span class="selo fato">Fato</span> O Analytics deixou de registrar <b>58</b> pedidos não cancelados (7,9%), então ele mostra menos compras do que a loja fez.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="alt" data-secao="definicoes">
+  <div class="eyebrow">Como ler os valores</div>
+  <h2>Quatro formas de medir a venda, que não se somam</h2>
+  <p class="lede">Cada relatório mede uma coisa diferente. Por isso os valores não batem entre si e não devem ser somados.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Medida</th><th>Fonte</th><th>Pedidos</th><th>Unidades</th><th>Valor</th></tr></thead>
+    <tbody>
+      <tr><td>Valor total registrado (todas as situações, inclusive canceladas)</td><td>Pedidos (Magazord)</td><td>835</td><td>2.958</td><td>R$ 109.129,42</td></tr>
+      <tr><td>Pedidos não cancelados (nota emitida, transporte ou entregue)</td><td>Pedidos (Magazord)</td><td>735</td><td>2.607</td><td>R$ 96.140,04</td></tr>
+      <tr><td>Produtos vendidos (soma do valor dos produtos)</td><td>Produtos Mais Vendidos (Magazord)</td><td>—</td><td>2.599</td><td>R$ 85.763,52</td></tr>
+      <tr><td>Compras registradas no site</td><td>Google Analytics (1 a 17/11)</td><td>740</td><td>—</td><td>R$ 96.599,50</td></tr>
+    </tbody></table></div>
+  <div class="note"><span class="selo calc">Cálculo</span> <b>Por que os valores diferem.</b> O valor dos pedidos não cancelados é R$ 10.376,52 maior que o dos produtos vendidos. O relatório de produtos soma só o valor dos produtos; a diferença provavelmente vem de frete e de ajustes no pedido, mas o relatório não mostra essa abertura <span class="selo lac">Lacuna</span>. Também há <b>8 unidades</b> a mais nos itens de pedidos não cancelados (2.607) do que nos produtos vendidos (2.599), uma diferença de 0,3% que a plataforma não explica.</div>
+  <div class="note"><span class="selo fato">Fato</span> <b>O Analytics confere com a loja.</b> Todas as 740 compras do Analytics existem na Magazord com o mesmo código e o mesmo valor. Mas 63 delas foram canceladas depois, e 58 pedidos não cancelados (R$ 7.789,24) não chegaram ao Analytics. Por isso a conversão do site neste relatório aparece um pouco abaixo da real.</div>
+</section>
+
+<section data-secao="lancamento">
+  <div class="eyebrow">Dia a dia</div>
+  <h2>As vendas se concentraram em dois dias</h2>
+  <p class="lede">Pedidos registrados em cada dia de novembro. Verde: pedidos não cancelados. Vermelho: pedidos cancelados no pagamento.</p>
+  <div class="chartcard">
+    <svg id="chartDia" viewBox="0 0 720 270" role="img" aria-label="Pedidos por dia de 1 a 18 de novembro, separando cancelados"><line x1="46" x2="714" y1="236.0" y2="236.0" stroke="#e6eae1"/><text x="38" y="240.0" font-size="11" text-anchor="end" fill="#64706a">0</text><line x1="46" x2="714" y1="175.4" y2="175.4" stroke="#e6eae1"/><text x="38" y="179.4" font-size="11" text-anchor="end" fill="#64706a">200</text><line x1="46" x2="714" y1="114.9" y2="114.9" stroke="#e6eae1"/><text x="38" y="118.9" font-size="11" text-anchor="end" fill="#64706a">400</text><line x1="46" x2="714" y1="54.3" y2="54.3" stroke="#e6eae1"/><text x="38" y="58.3" font-size="11" text-anchor="end" fill="#64706a">600</text><g class="bar" data-t="01/11" data-r="Pedidos registrados|0;Não cancelados|0;Cancelados|0;Valor não cancelado|R$ 0,00"><rect x="51.9" y="236.0" width="25.1" height="0.0" rx="2" fill="#1f5b3c"/><rect x="51.9" y="236.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="46.0" y="18" width="36.9" height="240"/></g><text x="64.4" y="252" font-size="10" text-anchor="middle" fill="#64706a">1</text><g class="bar" data-t="02/11" data-r="Pedidos registrados|1;Não cancelados|1;Cancelados|0;Valor não cancelado|R$ 197,90"><rect x="88.8" y="234.0" width="25.1" height="2.0" rx="2" fill="#1f5b3c"/><rect x="88.8" y="234.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="82.9" y="18" width="36.9" height="240"/></g><text x="101.3" y="252" font-size="10" text-anchor="middle" fill="#64706a">2</text><g class="bar" data-t="03/11" data-r="Pedidos registrados|0;Não cancelados|0;Cancelados|0;Valor não cancelado|R$ 0,00"><rect x="125.7" y="236.0" width="25.1" height="0.0" rx="2" fill="#1f5b3c"/><rect x="125.7" y="236.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="119.8" y="18" width="36.9" height="240"/></g><text x="138.2" y="252" font-size="10" text-anchor="middle" fill="#64706a">3</text><g class="bar" data-t="04/11" data-r="Pedidos registrados|0;Não cancelados|0;Cancelados|0;Valor não cancelado|R$ 0,00"><rect x="162.6" y="236.0" width="25.1" height="0.0" rx="2" fill="#1f5b3c"/><rect x="162.6" y="236.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="156.7" y="18" width="36.9" height="240"/></g><text x="175.1" y="252" font-size="10" text-anchor="middle" fill="#64706a">4</text><g class="bar" data-t="05/11" data-r="Pedidos registrados|0;Não cancelados|0;Cancelados|0;Valor não cancelado|R$ 0,00"><rect x="199.5" y="236.0" width="25.1" height="0.0" rx="2" fill="#1f5b3c"/><rect x="199.5" y="236.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="193.6" y="18" width="36.9" height="240"/></g><text x="212.0" y="252" font-size="10" text-anchor="middle" fill="#64706a">5</text><g class="bar" data-t="06/11" data-r="Pedidos registrados|0;Não cancelados|0;Cancelados|0;Valor não cancelado|R$ 0,00"><rect x="236.3" y="236.0" width="25.1" height="0.0" rx="2" fill="#1f5b3c"/><rect x="236.3" y="236.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="230.4" y="18" width="36.9" height="240"/></g><text x="248.9" y="252" font-size="10" text-anchor="middle" fill="#64706a">6</text><g class="bar" data-t="07/11" data-r="Pedidos registrados|0;Não cancelados|0;Cancelados|0;Valor não cancelado|R$ 0,00"><rect x="273.2" y="236.0" width="25.1" height="0.0" rx="2" fill="#1f5b3c"/><rect x="273.2" y="236.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="267.3" y="18" width="36.9" height="240"/></g><text x="285.8" y="252" font-size="10" text-anchor="middle" fill="#64706a">7</text><g class="bar" data-t="08/11" data-r="Pedidos registrados|0;Não cancelados|0;Cancelados|0;Valor não cancelado|R$ 0,00"><rect x="310.1" y="236.0" width="25.1" height="0.0" rx="2" fill="#1f5b3c"/><rect x="310.1" y="236.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="304.2" y="18" width="36.9" height="240"/></g><text x="322.7" y="252" font-size="10" text-anchor="middle" fill="#64706a">8</text><g class="bar" data-t="09/11" data-r="Pedidos registrados|1;Não cancelados|1;Cancelados|0;Valor não cancelado|R$ 211,46"><rect x="347.0" y="234.0" width="25.1" height="2.0" rx="2" fill="#1f5b3c"/><rect x="347.0" y="234.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="341.1" y="18" width="36.9" height="240"/></g><text x="359.6" y="252" font-size="10" text-anchor="middle" fill="#64706a">9</text><g class="bar" data-t="10/11" data-r="Pedidos registrados|707;Não cancelados|619;Cancelados|88;Valor não cancelado|R$ 83.030,94"><rect x="383.9" y="48.6" width="25.1" height="187.4" rx="2" fill="#1f5b3c"/><rect x="383.9" y="21.9" width="25.1" height="26.6" rx="2" fill="#a8392a"/><rect class="hotzone" x="378.0" y="18" width="36.9" height="240"/></g><text x="396.4" y="15.9" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">707</text><text x="396.4" y="252" font-size="10" text-anchor="middle" fill="#64706a">10</text><g class="bar" data-t="11/11" data-r="Pedidos registrados|100;Não cancelados|91;Cancelados|9;Valor não cancelado|R$ 10.109,59"><rect x="420.8" y="208.4" width="25.1" height="27.6" rx="2" fill="#1f5b3c"/><rect x="420.8" y="205.7" width="25.1" height="2.7" rx="2" fill="#a8392a"/><rect class="hotzone" x="414.9" y="18" width="36.9" height="240"/></g><text x="433.3" y="199.7" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">100</text><text x="433.3" y="252" font-size="10" text-anchor="middle" fill="#64706a">11</text><g class="bar" data-t="12/11" data-r="Pedidos registrados|8;Não cancelados|7;Cancelados|1;Valor não cancelado|R$ 762,87"><rect x="457.7" y="233.9" width="25.1" height="2.1" rx="2" fill="#1f5b3c"/><rect x="457.7" y="233.6" width="25.1" height="0.3" rx="2" fill="#a8392a"/><rect class="hotzone" x="451.8" y="18" width="36.9" height="240"/></g><text x="470.2" y="252" font-size="10" text-anchor="middle" fill="#64706a">12</text><g class="bar" data-t="13/11" data-r="Pedidos registrados|14;Não cancelados|13;Cancelados|1;Valor não cancelado|R$ 1.666,68"><rect x="494.6" y="232.1" width="25.1" height="3.9" rx="2" fill="#1f5b3c"/><rect x="494.6" y="231.8" width="25.1" height="0.3" rx="2" fill="#a8392a"/><rect class="hotzone" x="488.7" y="18" width="36.9" height="240"/></g><text x="507.1" y="252" font-size="10" text-anchor="middle" fill="#64706a">13</text><g class="bar" data-t="14/11" data-r="Pedidos registrados|1;Não cancelados|1;Cancelados|0;Valor não cancelado|R$ 50,80"><rect x="531.5" y="234.0" width="25.1" height="2.0" rx="2" fill="#1f5b3c"/><rect x="531.5" y="234.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="525.6" y="18" width="36.9" height="240"/></g><text x="544.0" y="252" font-size="10" text-anchor="middle" fill="#64706a">14</text><g class="bar" data-t="15/11" data-r="Pedidos registrados|1;Não cancelados|1;Cancelados|0;Valor não cancelado|R$ 54,90"><rect x="568.3" y="234.0" width="25.1" height="2.0" rx="2" fill="#1f5b3c"/><rect x="568.3" y="234.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="562.4" y="18" width="36.9" height="240"/></g><text x="580.9" y="252" font-size="10" text-anchor="middle" fill="#64706a">15</text><g class="bar" data-t="16/11" data-r="Pedidos registrados|2;Não cancelados|1;Cancelados|1;Valor não cancelado|R$ 54,90"><rect x="605.2" y="234.0" width="25.1" height="2.0" rx="2" fill="#1f5b3c"/><rect x="605.2" y="233.7" width="25.1" height="0.3" rx="2" fill="#a8392a"/><rect class="hotzone" x="599.3" y="18" width="36.9" height="240"/></g><text x="617.8" y="252" font-size="10" text-anchor="middle" fill="#64706a">16</text><g class="bar" data-t="17/11" data-r="Pedidos registrados|0;Não cancelados|0;Cancelados|0;Valor não cancelado|R$ 0,00"><rect x="642.1" y="236.0" width="25.1" height="0.0" rx="2" fill="#1f5b3c"/><rect x="642.1" y="236.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="636.2" y="18" width="36.9" height="240"/></g><text x="654.7" y="252" font-size="10" text-anchor="middle" fill="#64706a">17</text><g class="bar" data-t="18/11" data-r="Pedidos registrados|0;Não cancelados|0;Cancelados|0;Valor não cancelado|R$ 0,00"><rect x="679.0" y="236.0" width="25.1" height="0.0" rx="2" fill="#1f5b3c"/><rect x="679.0" y="236.0" width="25.1" height="0.0" rx="2" fill="#a8392a"/><rect class="hotzone" x="673.1" y="18" width="36.9" height="240"/></g><text x="691.6" y="252" font-size="10" text-anchor="middle" fill="#64706a">18</text></svg>
+    <div class="legend"><span><i style="background:var(--pine)"></i>Não cancelados</span><span><i style="background:var(--crit)"></i>Cancelados</span><span class="muted">dias de novembro · passe o mouse ou toque para ver cada dia</span></div>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Dia</th><th>Pedidos</th><th>Cancelados</th><th>Valor não cancelado</th><th>Itens pedidos</th><th>Sessões no site</th><th>Compras ÷ sessões</th></tr></thead>
+    <tbody><tr><td>02/11</td><td>1</td><td>0</td><td>R$ 197,90</td><td>5</td><td>32</td><td>0,0%</td></tr><tr><td>09/11</td><td>1</td><td>0</td><td>R$ 211,46</td><td>4</td><td>123</td><td>0,8%</td></tr><tr><td>10/11</td><td>707</td><td>88</td><td>R$ 83.030,94</td><td>2.591</td><td>4.564</td><td>13,6%</td></tr><tr><td>11/11</td><td>100</td><td>9</td><td>R$ 10.109,59</td><td>282</td><td>1.776</td><td>5,2%</td></tr><tr><td>12/11</td><td>8</td><td>1</td><td>R$ 762,87</td><td>22</td><td>667</td><td>1,2%</td></tr><tr><td>13/11</td><td>14</td><td>1</td><td>R$ 1.666,68</td><td>48</td><td>453</td><td>2,6%</td></tr><tr><td>14/11</td><td>1</td><td>0</td><td>R$ 50,80</td><td>1</td><td>240</td><td>0,4%</td></tr><tr><td>15/11</td><td>1</td><td>0</td><td>R$ 54,90</td><td>1</td><td>120</td><td>0,8%</td></tr><tr><td>16/11</td><td>2</td><td>1</td><td>R$ 54,90</td><td>4</td><td>466</td><td>0,4%</td></tr><tr><td>17/11</td><td>0</td><td>0</td><td>R$ 0,00</td><td>0</td><td>130</td><td>0,0%</td></tr></tbody></table></div>
+  <p class="hint">Mostra só os dias com pedido ou com mais de 100 sessões. "Itens pedidos" inclui itens de pedidos cancelados. O Analytics vai até 17/11. "Compras ÷ sessões" usa as compras registradas no Analytics.</p>
+  <div class="two">
+    <div class="panel"><h3><span class="selo calc">Cálculo</span> 10 e 11/11 concentraram o mês</h3>
+      <p>Foram <b>807 pedidos</b> nesses dois dias, 96,6% do período, e <b>R$ 93.140,53</b> em pedidos não cancelados, 96,9% do valor não cancelado de novembro.</p>
+      <p class="muted">Não projetamos o fechamento do mês: um pico de lançamento dividido pelos dias corridos daria um número sem base.</p></div>
+    <div class="panel"><h3><span class="selo fato">Fato</span> Depois de 11/11</h3>
+      <p>De 12 a 16/11 a loja registrou <b>26 pedidos</b> (23 não cancelados). O último pedido do período é de 16/11, às 11h01. Não houve pedidos em 17 e 18/11 até a extração.</p></div>
+  </div>
+</section>
+
+<section class="alt" data-secao="hora">
+  <div class="eyebrow">O dia do lançamento</div>
+  <h2>Como foi o 10 de novembro, hora a hora</h2>
+  <p class="lede">Pedidos registrados em cada hora de 10/11. Não houve pedidos antes das 12h.</p>
+  <div class="chartcard">
+    <svg id="chartHora" viewBox="0 0 720 250" role="img" aria-label="Pedidos por hora em 10 de novembro"><line x1="40" x2="714" y1="214.0" y2="214.0" stroke="#e6eae1"/><text x="32" y="218.0" font-size="11" text-anchor="end" fill="#64706a">0</text><line x1="40" x2="714" y1="164.5" y2="164.5" stroke="#e6eae1"/><text x="32" y="168.5" font-size="11" text-anchor="end" fill="#64706a">50</text><line x1="40" x2="714" y1="115.0" y2="115.0" stroke="#e6eae1"/><text x="32" y="119.0" font-size="11" text-anchor="end" fill="#64706a">100</text><line x1="40" x2="714" y1="65.5" y2="65.5" stroke="#e6eae1"/><text x="32" y="69.5" font-size="11" text-anchor="end" fill="#64706a">150</text><line x1="40" x2="714" y1="16.0" y2="16.0" stroke="#e6eae1"/><text x="32" y="20.0" font-size="11" text-anchor="end" fill="#64706a">200</text><g class="bar" data-t="10/11, 12h" data-r="Pedidos registrados|198;Acumulado no dia|198;% do dia|28,0%"><rect x="48.4" y="18.0" width="39.1" height="196.0" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="40.0" y="16" width="55.8" height="218"/></g><text x="67.9" y="12.0" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">198</text><text x="67.9" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">12h</text><g class="bar" data-t="10/11, 13h" data-r="Pedidos registrados|101;Acumulado no dia|299;% do dia|14,3%"><rect x="104.2" y="114.0" width="39.1" height="100.0" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="95.8" y="16" width="55.8" height="218"/></g><text x="123.8" y="108.0" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">101</text><text x="123.8" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">13h</text><g class="bar" data-t="10/11, 14h" data-r="Pedidos registrados|103;Acumulado no dia|402;% do dia|14,6%"><rect x="160.0" y="112.0" width="39.1" height="102.0" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="151.7" y="16" width="55.8" height="218"/></g><text x="179.6" y="106.0" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">103</text><text x="179.6" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">14h</text><g class="bar" data-t="10/11, 15h" data-r="Pedidos registrados|56;Acumulado no dia|458;% do dia|7,9%"><rect x="215.9" y="158.6" width="39.1" height="55.4" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="207.5" y="16" width="55.8" height="218"/></g><text x="235.4" y="152.6" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">56</text><text x="235.4" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">15h</text><g class="bar" data-t="10/11, 16h" data-r="Pedidos registrados|40;Acumulado no dia|498;% do dia|5,7%"><rect x="271.7" y="174.4" width="39.1" height="39.6" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="263.3" y="16" width="55.8" height="218"/></g><text x="291.3" y="168.4" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">40</text><text x="291.3" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">16h</text><g class="bar" data-t="10/11, 17h" data-r="Pedidos registrados|33;Acumulado no dia|531;% do dia|4,7%"><rect x="327.5" y="181.3" width="39.1" height="32.7" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="319.2" y="16" width="55.8" height="218"/></g><text x="347.1" y="175.3" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">33</text><text x="347.1" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">17h</text><g class="bar" data-t="10/11, 18h" data-r="Pedidos registrados|44;Acumulado no dia|575;% do dia|6,2%"><rect x="383.4" y="170.4" width="39.1" height="43.6" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="375.0" y="16" width="55.8" height="218"/></g><text x="402.9" y="164.4" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">44</text><text x="402.9" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">18h</text><g class="bar" data-t="10/11, 19h" data-r="Pedidos registrados|44;Acumulado no dia|619;% do dia|6,2%"><rect x="439.2" y="170.4" width="39.1" height="43.6" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="430.8" y="16" width="55.8" height="218"/></g><text x="458.8" y="164.4" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">44</text><text x="458.8" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">19h</text><g class="bar" data-t="10/11, 20h" data-r="Pedidos registrados|33;Acumulado no dia|652;% do dia|4,7%"><rect x="495.0" y="181.3" width="39.1" height="32.7" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="486.7" y="16" width="55.8" height="218"/></g><text x="514.6" y="175.3" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">33</text><text x="514.6" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">20h</text><g class="bar" data-t="10/11, 21h" data-r="Pedidos registrados|31;Acumulado no dia|683;% do dia|4,4%"><rect x="550.9" y="183.3" width="39.1" height="30.7" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="542.5" y="16" width="55.8" height="218"/></g><text x="570.4" y="177.3" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">31</text><text x="570.4" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">21h</text><g class="bar" data-t="10/11, 22h" data-r="Pedidos registrados|12;Acumulado no dia|695;% do dia|1,7%"><rect x="606.7" y="202.1" width="39.1" height="11.9" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="598.3" y="16" width="55.8" height="218"/></g><text x="626.2" y="196.1" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">12</text><text x="626.2" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">22h</text><g class="bar" data-t="10/11, 23h" data-r="Pedidos registrados|12;Acumulado no dia|707;% do dia|1,7%"><rect x="662.5" y="202.1" width="39.1" height="11.9" rx="3" fill="#1f5b3c"/><rect class="hotzone" x="654.2" y="16" width="55.8" height="218"/></g><text x="682.1" y="196.1" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">12</text><text x="682.1" y="230" font-size="10.5" text-anchor="middle" fill="#64706a">23h</text></svg>
+    <div class="legend"><span><i style="background:var(--pine)"></i>Pedidos registrados (todas as situações)</span><span class="muted">passe o mouse ou toque para ver o acumulado</span></div>
+  </div>
+  <p class="note"><span class="selo fato">Fato</span> O primeiro pedido foi às 12h39. Em 10 minutos já eram 110 pedidos, em 30 minutos 221 e em uma hora 274 (38,8% do dia). Esse ritmo é típico de um público avisado antes da abertura. <span class="selo lac">Lacuna</span> Não recebemos dados sobre as ações de pré-lançamento (lista de espera, avisos no Instagram, grupos), então não dá para dizer qual delas trouxe esse público.</p>
+</section>
+
+<section data-secao="aromas">
+  <div class="eyebrow">Os produtos</div>
+  <h2>Os quatro Body Splash</h2>
+  <p class="lede">Barra verde: unidades vendidas (relatório de produtos). Contorno claro: unidades pedidas em todas as situações, inclusive canceladas (relatório de itens).</p>
+  <div class="chartcard">
+    <svg id="chartAromas" viewBox="0 0 720 236" role="img" aria-label="Unidades vendidas e unidades pedidas por aroma"><g class="bar" data-t="Body Splash Vênus" data-r="Unidades vendidas|706;Valor vendido|R$ 23.365,31;Preço médio/un.|R$ 33,10;Unidades pedidas (todas as situações)|805;Disponível em 18/11|2"><text x="82" y="36" font-size="13" text-anchor="end" fill="#1b2620" font-weight="600">Vênus</text><rect x="92" y="20" width="420.2" height="26" rx="4" fill="#eef4ec" stroke="#8aae96"/><rect x="92" y="20" width="368.5" height="26" rx="4" fill="#1f5b3c"/><text x="520.2" y="38" font-size="12" fill="#184a30" font-weight="700">706 vendidas · 27,3%</text><rect class="hotzone" x="0" y="16" width="718" height="40"/></g><g class="bar" data-t="Body Splash Solar" data-r="Unidades vendidas|703;Valor vendido|R$ 23.221,16;Preço médio/un.|R$ 33,03;Unidades pedidas (todas as situações)|796;Disponível em 18/11|2"><text x="82" y="90" font-size="13" text-anchor="end" fill="#1b2620" font-weight="600">Solar</text><rect x="92" y="74" width="415.5" height="26" rx="4" fill="#eef4ec" stroke="#8aae96"/><rect x="92" y="74" width="366.9" height="26" rx="4" fill="#1f5b3c"/><text x="515.5" y="92" font-size="12" fill="#184a30" font-weight="700">703 vendidas · 27,2%</text><rect class="hotzone" x="0" y="70" width="718" height="40"/></g><g class="bar" data-t="Body Splash Lua" data-r="Unidades vendidas|681;Valor vendido|R$ 22.463,14;Preço médio/un.|R$ 32,99;Unidades pedidas (todas as situações)|778;Disponível em 18/11|3"><text x="82" y="144" font-size="13" text-anchor="end" fill="#1b2620" font-weight="600">Lua</text><rect x="92" y="128" width="406.1" height="26" rx="4" fill="#eef4ec" stroke="#8aae96"/><rect x="92" y="128" width="355.4" height="26" rx="4" fill="#1f5b3c"/><text x="506.1" y="146" font-size="12" fill="#184a30" font-weight="700">681 vendidas · 26,3%</text><rect class="hotzone" x="0" y="124" width="718" height="40"/></g><g class="bar" data-t="Body Splash Saturno" data-r="Unidades vendidas|499;Valor vendido|R$ 16.388,88;Preço médio/un.|R$ 32,84;Unidades pedidas (todas as situações)|569;Disponível em 18/11|0"><text x="82" y="198" font-size="13" text-anchor="end" fill="#1b2620" font-weight="600">Saturno</text><rect x="92" y="182" width="297.0" height="26" rx="4" fill="#eef4ec" stroke="#8aae96"/><rect x="92" y="182" width="260.5" height="26" rx="4" fill="#1f5b3c"/><text x="397.0" y="200" font-size="12" fill="#184a30" font-weight="700">499 vendidas · 19,3%</text><rect class="hotzone" x="0" y="178" width="718" height="40"/></g></svg>
+    <div class="legend"><span><i style="background:var(--pine)"></i>Unidades vendidas</span><span><i style="background:#eef4ec;border:1px solid #8aae96"></i>Unidades pedidas, incluindo canceladas</span></div>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Aroma</th><th>Vendidas</th><th>% un.</th><th>Valor vendido</th><th>% valor</th><th>Preço médio</th><th>Pedidas*</th><th>Estoque 18/11</th></tr></thead>
+    <tbody><tr><td>Vênus</td><td>706</td><td>27,3%</td><td>R$ 23.365,31</td><td>27,3%</td><td>R$ 33,10</td><td>805</td><td>2</td></tr><tr><td>Solar</td><td>703</td><td>27,2%</td><td>R$ 23.221,16</td><td>27,2%</td><td>R$ 33,03</td><td>796</td><td>2</td></tr><tr><td>Lua</td><td>681</td><td>26,3%</td><td>R$ 22.463,14</td><td>26,3%</td><td>R$ 32,99</td><td>778</td><td>3</td></tr><tr><td>Saturno</td><td>499</td><td>19,3%</td><td>R$ 16.388,88</td><td>19,2%</td><td>R$ 32,84</td><td>569</td><td>0</td></tr><tr class="total"><td>Total Body Splash</td><td>2.589</td><td>100,0%</td><td>R$ 85.438,49</td><td>100,0%</td><td>R$ 33,00</td><td>2.948</td><td>7</td></tr></tbody></table></div>
+  <p class="hint">* "Pedidas" é a quantidade dos itens em pedidos de todas as situações, inclusive cancelados (o campo "quantidade necessária" da plataforma). Não é a quantidade vendida. Fora o Body Splash, foram vendidas 10 unidades de outros produtos (camisetas e um gloss), somando R$ 325,03.</p>
+  <div class="note warn"><span class="selo hip">Hipótese</span> <b>Saturno vendeu menos, mas isso não prova que é o aroma menos preferido.</b> Saturno é o único aroma zerado. Somando o que foi vendido e o que sobrou, Saturno fica em cerca de 499 unidades, contra 684 a 708 nos outros. Isso combina com um lote menor de Saturno que esgotou antes. Sem o estoque inicial e a hora em que cada aroma acabou, não dá para separar preferência de disponibilidade. <span class="selo lac">Lacuna</span></div>
+</section>
+
+<section class="alt" data-secao="situacao">
+  <div class="eyebrow">Andamento dos pedidos</div>
+  <h2>Situação dos pedidos e cancelamentos</h2>
+  <p class="lede">Situação de cada pedido na plataforma em 18/11.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Situação</th><th>Pedidos</th><th>% dos pedidos</th><th>Valor</th><th>Itens</th></tr></thead>
+    <tbody><tr><td>Entregue</td><td>154</td><td>18,4%</td><td>R$ 19.482,76</td><td>557</td></tr><tr><td>Transporte</td><td>397</td><td>47,5%</td><td>R$ 52.256,72</td><td>1.354</td></tr><tr><td>Nota Fiscal Emitida</td><td>184</td><td>22,0%</td><td>R$ 24.400,56</td><td>696</td></tr><tr><td>Cancelado Pagamento</td><td>97</td><td>11,6%</td><td>R$ 12.493,30</td><td>339</td></tr><tr><td>Cancelado Pagamento Análise</td><td>3</td><td>0,4%</td><td>R$ 496,08</td><td>12</td></tr><tr class="total"><td>Total</td><td>835</td><td>100,0%</td><td>R$ 109.129,42</td><td>2.958</td></tr></tbody></table></div>
+  <div class="two">
+    <div class="panel"><h3><span class="selo fato">Fato</span> Entrega</h3>
+      <p>Dos 735 pedidos não cancelados, <b>154</b> (21,0%) já foram entregues e <b>397</b> (54,0%) estão em transporte. 184 estão com nota fiscal emitida, ainda sem sair para entrega.</p></div>
+    <div class="panel"><h3><span class="selo hip">Indício</span> Muitos cancelamentos voltaram como compra</h3>
+      <p>Comparando os nomes dos compradores, <b>61 dos 100</b> pedidos cancelados são de pessoas que também têm um pedido não cancelado no período. Isso sugere que boa parte dos cancelamentos foi uma tentativa de pagamento que falhou e foi refeita, e não uma venda perdida.</p>
+      <p class="muted">A comparação por nome é aproximada (nomes iguais ou escritos de outro jeito não são separados), e os relatórios não informam a forma de pagamento. <span class="selo lac">Lacuna</span></p></div>
+  </div>
+</section>
+
+<section data-secao="site">
+  <div class="eyebrow">O site</div>
+  <h2>O público continuou chegando depois que as vendas pararam</h2>
+  <p class="lede">Sessões por dia no Google Analytics, de 9 a 17/11. O número acima de cada barra é a parte das sessões que terminou em compra.</p>
+  <div class="chartcard">
+    <svg id="chartSite" viewBox="0 0 720 260" role="img" aria-label="Sessões por dia e compras registradas no Google Analytics, 9 a 17 de novembro"><line x1="46" x2="714" y1="222.0" y2="222.0" stroke="#e6eae1"/><text x="38" y="226.0" font-size="11" text-anchor="end" fill="#64706a">0</text><line x1="46" x2="714" y1="179.1" y2="179.1" stroke="#e6eae1"/><text x="38" y="183.1" font-size="11" text-anchor="end" fill="#64706a">1.000</text><line x1="46" x2="714" y1="136.2" y2="136.2" stroke="#e6eae1"/><text x="38" y="140.2" font-size="11" text-anchor="end" fill="#64706a">2.000</text><line x1="46" x2="714" y1="93.2" y2="93.2" stroke="#e6eae1"/><text x="38" y="97.2" font-size="11" text-anchor="end" fill="#64706a">3.000</text><line x1="46" x2="714" y1="50.3" y2="50.3" stroke="#e6eae1"/><text x="38" y="54.3" font-size="11" text-anchor="end" fill="#64706a">4.000</text><g class="bar" data-t="09/11" data-r="Sessões|123;Adições ao carrinho (eventos)|39;Adições por sessão|0,32;Compras no Analytics|1;Compras ÷ sessões|0,8%"><rect x="59.3" y="216.7" width="47.2" height="5.3" rx="3" fill="#8aae96"/><rect class="hotzone" x="46.0" y="16" width="73.8" height="226"/></g><text x="82.9" y="210.7" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">0,8%</text><text x="82.9" y="238" font-size="10.5" text-anchor="middle" fill="#64706a">09/11</text><g class="bar" data-t="10/11" data-r="Sessões|4.564;Adições ao carrinho (eventos)|7.191;Adições por sessão|1,58;Compras no Analytics|622;Compras ÷ sessões|13,6%"><rect x="133.1" y="26.1" width="47.2" height="195.9" rx="3" fill="#8aae96"/><rect class="hotzone" x="119.8" y="16" width="73.8" height="226"/></g><text x="156.7" y="20.1" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">13,6%</text><text x="156.7" y="238" font-size="10.5" text-anchor="middle" fill="#64706a">10/11</text><g class="bar" data-t="11/11" data-r="Sessões|1.776;Adições ao carrinho (eventos)|1.553;Adições por sessão|0,87;Compras no Analytics|93;Compras ÷ sessões|5,2%"><rect x="206.8" y="145.8" width="47.2" height="76.2" rx="3" fill="#8aae96"/><rect class="hotzone" x="193.6" y="16" width="73.8" height="226"/></g><text x="230.4" y="139.8" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">5,2%</text><text x="230.4" y="238" font-size="10.5" text-anchor="middle" fill="#64706a">11/11</text><g class="bar" data-t="12/11" data-r="Sessões|667;Adições ao carrinho (eventos)|236;Adições por sessão|0,35;Compras no Analytics|8;Compras ÷ sessões|1,2%"><rect x="280.6" y="193.4" width="47.2" height="28.6" rx="3" fill="#8aae96"/><rect class="hotzone" x="267.3" y="16" width="73.8" height="226"/></g><text x="304.2" y="187.4" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">1,2%</text><text x="304.2" y="238" font-size="10.5" text-anchor="middle" fill="#64706a">12/11</text><g class="bar" data-t="13/11" data-r="Sessões|453;Adições ao carrinho (eventos)|231;Adições por sessão|0,51;Compras no Analytics|12;Compras ÷ sessões|2,6%"><rect x="354.4" y="202.6" width="47.2" height="19.4" rx="3" fill="#8aae96"/><rect class="hotzone" x="341.1" y="16" width="73.8" height="226"/></g><text x="378.0" y="196.6" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">2,6%</text><text x="378.0" y="238" font-size="10.5" text-anchor="middle" fill="#64706a">13/11</text><g class="bar" data-t="14/11" data-r="Sessões|240;Adições ao carrinho (eventos)|31;Adições por sessão|0,13;Compras no Analytics|1;Compras ÷ sessões|0,4%"><rect x="428.2" y="211.7" width="47.2" height="10.3" rx="3" fill="#8aae96"/><rect class="hotzone" x="414.9" y="16" width="73.8" height="226"/></g><text x="451.8" y="205.7" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">0,4%</text><text x="451.8" y="238" font-size="10.5" text-anchor="middle" fill="#64706a">14/11</text><g class="bar" data-t="15/11" data-r="Sessões|120;Adições ao carrinho (eventos)|1;Adições por sessão|0,01;Compras no Analytics|1;Compras ÷ sessões|0,8%"><rect x="501.9" y="216.8" width="47.2" height="5.2" rx="3" fill="#8aae96"/><rect class="hotzone" x="488.7" y="16" width="73.8" height="226"/></g><text x="525.6" y="210.8" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">0,8%</text><text x="525.6" y="238" font-size="10.5" text-anchor="middle" fill="#64706a">15/11</text><g class="bar" data-t="16/11" data-r="Sessões|466;Adições ao carrinho (eventos)|30;Adições por sessão|0,06;Compras no Analytics|2;Compras ÷ sessões|0,4%"><rect x="575.7" y="202.0" width="47.2" height="20.0" rx="3" fill="#8aae96"/><rect class="hotzone" x="562.4" y="16" width="73.8" height="226"/></g><text x="599.3" y="196.0" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">0,4%</text><text x="599.3" y="238" font-size="10.5" text-anchor="middle" fill="#64706a">16/11</text><g class="bar" data-t="17/11" data-r="Sessões|130;Adições ao carrinho (eventos)|5;Adições por sessão|0,04;Compras no Analytics|0;Compras ÷ sessões|0,0%"><rect x="649.5" y="216.4" width="47.2" height="5.6" rx="3" fill="#8aae96"/><rect class="hotzone" x="636.2" y="16" width="73.8" height="226"/></g><text x="673.1" y="210.4" font-size="11" text-anchor="middle" fill="#184a30" font-weight="700">0,0%</text><text x="673.1" y="238" font-size="10.5" text-anchor="middle" fill="#64706a">17/11</text></svg>
+    <div class="legend"><span><i style="background:var(--sage)"></i>Sessões</span><span class="muted">número acima da barra = compras ÷ sessões · passe o mouse para ver o carrinho</span></div>
+  </div>
+  <div class="note"><span class="selo calc">Cálculo</span> As adições ao carrinho por sessão caíram de <b>1,58</b> em 10/11 para <b>0,35</b> em 12/11, <b>0,13</b> em 14/11 e <b>0,06</b> em 16/11. Enquanto isso, o site ainda recebeu 1.120 sessões em 12 e 13/11 e 466 em 16/11. Gente continuou entrando, mas quase ninguém conseguiu ou quis colocar o produto no carrinho. Isso combina com produtos indisponíveis, mas não prova a data em que cada aroma esgotou. Adição ao carrinho é contagem de eventos, não de pessoas.</div>
+  <h3 style="margin-top:26px">De onde vieram as visitas</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Origem</th><th>Sessões</th><th>% das sessões</th><th>Compras</th><th>% das compras</th><th>Compras ÷ sessões</th></tr></thead>
+    <tbody><tr><td>Instagram (link na bio, perfil e loja)</td><td>5.817</td><td>62,6%</td><td>330</td><td>44,6%</td><td>5,7%</td></tr><tr><td>Acesso direto (sem origem identificada)</td><td>2.936</td><td>31,6%</td><td>380</td><td>51,4%</td><td>12,9%</td></tr><tr><td>Busca orgânica (Google e Bing)</td><td>492</td><td>5,3%</td><td>27</td><td>3,6%</td><td>5,5%</td></tr><tr><td>Outras origens</td><td>45</td><td>0,5%</td><td>3</td><td>0,4%</td><td>6,7%</td></tr><tr class="total"><td>Total do recorte por origem</td><td>9.290</td><td>100,0%</td><td>740</td><td>100,0%</td><td>8,0%</td></tr></tbody></table></div>
+  <p class="hint">Fonte: Google Analytics, 1 a 17/11, pela origem da sessão. Só 1 sessão veio marcada como anúncio (origem "facebook / DPA"), sem compra. "Acesso direto" reúne visitas sem origem identificada, como links abertos dentro de aplicativos de mensagem.</p>
+  <p class="note"><span class="selo fato">Fato</span> <b>As sessões mudam um pouco conforme o recorte.</b> O Analytics conta 9.380 sessões no total do período, 9.290 somando as origens, 9.350 somando os aparelhos e 8.852 somando os dias. As compras fecham em 740 em todos os recortes. Por isso cada tabela usa o próprio total, e as taxas por sessão são aproximadas.</p>
+  <div class="two">
+    <div class="panel"><h3><span class="selo fato">Fato</span> Celular</h3><p><b>96,0%</b> das sessões e <b>95,8%</b> das compras registradas foram no celular. A experiência de compra da Boom é, na prática, mobile.</p></div>
+    <div class="panel"><h3><span class="selo fato">Fato</span> Mídia paga</h3><p>A conta de anúncios da Meta conectada à Boom não tem investimento desde 12/05/2026, e não há conta de Google Ads conectada. Por isso este relatório não traz custo por venda nem retorno sobre anúncios: não houve anúncio para medir.</p></div>
+  </div>
+</section>
+
+<section class="alt" data-secao="estoque">
+  <div class="eyebrow">Indisponibilidade</div>
+  <h2>O que a falta de estoque pode ter custado</h2>
+  <p class="lede">Os quatro Body Splash estão marcados como indisponíveis na plataforma. O que os dados mostram, e o que ainda não mostram:</p>
+  <div class="two">
+    <div class="panel"><h3>O que está comprovado</h3><ul>
+      <li><span class="selo fato">Fato</span> Em 18/11 restavam 2 unidades de Vênus, 2 de Solar, 3 de Lua e nenhuma de Saturno.</li>
+      <li><span class="selo fato">Fato</span> De 12 a 17/11 o site teve 2.076 sessões e 24 compras registradas.</li>
+      <li><span class="selo calc">Cálculo</span> As adições ao carrinho por sessão caíram 96% entre 10/11 e 16/11.</li>
+    </ul></div>
+    <div class="panel"><h3>O que ainda não dá para afirmar</h3><ul>
+      <li><span class="selo lac">Lacuna</span> A data e a hora em que cada aroma esgotou. Sem isso, não dá para separar quanto da queda veio da falta de produto e quanto é a queda natural depois de um lançamento.</li>
+      <li><span class="selo lac">Lacuna</span> Quantas vendas foram perdidas. Não estimamos esse valor: qualquer número dependeria de supor uma demanda que os dados não mostram.</li>
+      <li><span class="selo lac">Lacuna</span> O estoque inicial de cada aroma.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section data-secao="hipoteses">
+  <div class="eyebrow">Por que o resultado foi este</div>
+  <h2>Hipóteses e o que falta para confirmar cada uma</h2>
+  <div class="hyp"><h3>1. A demanda estava pronta antes da abertura</h3><div class="g">
+    <div><b>A favor</b>110 pedidos nos primeiros 10 minutos; 13,6% das sessões de 10/11 com compra; nenhum anúncio pago.</div>
+    <div><b>Contra</b>Nenhum dado contrário. Também não sabemos o tamanho do público avisado antes.</div>
+    <div><b>Situação</b><span class="selo hip">Indício</span> forte</div>
+    <div><b>Falta</b>Tamanho da lista de espera ou dos avisos de pré-lançamento e o alcance das publicações nos dias 9 e 10/11.</div></div></div>
+  <div class="hyp"><h3>2. A falta de estoque limitou as vendas depois de 11/11</h3><div class="g">
+    <div><b>A favor</b>Estoque atual quase zero; as visitas continuaram, mas as adições ao carrinho por sessão caíram de 1,58 para 0,06.</div>
+    <div><b>Contra</b>Depois de um lançamento a procura cai naturalmente, e isso também explicaria parte da queda.</div>
+    <div><b>Situação</b><span class="selo hip">Hipótese</span> plausível, não comprovada</div>
+    <div><b>Falta</b>Histórico de estoque por aroma, com data e hora.</div></div></div>
+  <div class="hyp"><h3>3. Saturno vendeu menos porque tinha menos estoque, não por preferência</h3><div class="g">
+    <div><b>A favor</b>Único aroma zerado; vendido + disponível ≈ 499 un., contra 684 a 708 nos outros.</div>
+    <div><b>Contra</b>Saturno também teve menos unidades pedidas no total (569), o que pode ser preferência ou só a falta de estoque.</div>
+    <div><b>Situação</b><span class="selo hip">Hipótese</span> em aberto</div>
+    <div><b>Falta</b>Estoque inicial e hora do esgotamento por aroma. A preferência só pode ser medida com os quatro disponíveis ao mesmo tempo.</div></div></div>
+  <div class="hyp"><h3>4. A maior parte dos cancelamentos foi uma falha de pagamento refeita</h3><div class="g">
+    <div><b>A favor</b>61 dos 100 cancelados são de compradores que também têm um pedido não cancelado.</div>
+    <div><b>Contra</b>A comparação por nome é aproximada.</div>
+    <div><b>Situação</b><span class="selo hip">Indício</span></div>
+    <div><b>Falta</b>Forma de pagamento e motivo do cancelamento de cada pedido.</div></div></div>
+  <div class="hyp"><h3>5. Ainda existe procura para a reposição</h3><div class="g">
+    <div><b>A favor</b>2.076 sessões de 12 a 17/11, mesmo com os produtos indisponíveis.</div>
+    <div><b>Contra</b>Sessão não é intenção de compra; parte pode ser só curiosidade.</div>
+    <div><b>Situação</b><span class="selo hip">Hipótese</span></div>
+    <div><b>Falta</b>Pedidos de "avise-me", mensagens recebidas e buscas pelo produto.</div></div></div>
+</section>
+
+<section class="alt" data-secao="recomendacoes">
+  <div class="eyebrow">O que fazer agora</div>
+  <h2>Recomendações, da mais para a menos importante</h2>
+  <ol class="recs">
+    <li><b class="t">Captar a procura enquanto não há estoque</b>Ativar o "avise-me quando chegar" em cada aroma (ou uma lista no WhatsApp), com uma mensagem clara de reposição na página. Isso registra a procura de quem hoje não tem como comprar e mostra quanto cada aroma é procurado, com os quatro nas mesmas condições.</li>
+    <li><b class="t">Registrar a cronologia do estoque</b>Anotar o estoque inicial de cada aroma no lote anterior e no próximo, e a data e hora em que cada um esgotar. Sem isso não dá para medir quanto a falta de produto custou nem comparar os aromas.</li>
+    <li><b class="t">Definir o lote de reposição sem cortar Saturno</b>As vendas de Saturno parecem limitadas pelo estoque, não pela preferência. Usar os pedidos de "avise-me" por aroma para dividir o próximo lote.</li>
+    <li><b class="t">Preparar o relançamento como o de 10/11</b>A primeira hora concentrou 38,8% dos pedidos do dia. Avisar a base com antecedência, abrir em horário marcado e conferir a capacidade do site e do pagamento para o pico.</li>
+    <li><b class="t">Reduzir as falhas de pagamento</b>12,0% dos pedidos foram cancelados no pagamento. Ver na plataforma de pagamento o motivo e a forma de pagamento desses pedidos, e ativar um lembrete para quem tem um pedido pendente.</li>
+    <li><b class="t">Corrigir a medição de compras no site</b>58 pedidos não cancelados não chegaram ao Analytics. Verificar se a compra é registrada em todas as formas de pagamento (por exemplo, quando o Pix é confirmado fora da página de agradecimento).</li>
+    <li><b class="t">Testar anúncios só depois da reposição</b>O lançamento vendeu sem mídia paga. Anunciar sem estoque gastaria verba com visitas que não podem comprar. Com estoque, fazer um teste pequeno e com orçamento definido.</li>
+  </ol>
+</section>
+
+<section data-secao="proximos">
+  <div class="eyebrow">Na reposição</div>
+  <h2>O que acompanhar quando o estoque voltar</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Indicador</th><th>Por que importa</th><th>Referência do lançamento</th></tr></thead>
+    <tbody>
+      <tr><td>Pedidos na primeira hora</td><td>Mostra se a base avisada respondeu</td><td>274 pedidos</td></tr>
+      <tr><td>Compras ÷ sessões no dia da abertura</td><td>Mostra se o público chegou pronto para comprar</td><td>13,6% (pode estar subestimada)</td></tr>
+      <tr><td>Hora em que cada aroma esgota</td><td>Mede a procura real e evita confundir falta de estoque com preferência</td><td>sem registro</td></tr>
+      <tr><td>Cancelamentos no pagamento</td><td>Mostra se a correção no pagamento funcionou</td><td>12,4% dos pedidos de 10/11</td></tr>
+      <tr><td>Valor médio por pedido</td><td>Mostra quantas unidades cada cliente leva</td><td>R$ 130,80 (novembro, não cancelados)</td></tr>
+      <tr><td>"Avise-me" que viraram compra</td><td>Mostra quanto da lista de espera se converteu</td><td>ainda não existe</td></tr>
+      <tr><td>Compras do site que chegam ao Analytics</td><td>Mostra se a medição foi corrigida</td><td>92,1% dos pedidos não cancelados</td></tr>
+    </tbody></table></div>
+  <p class="note"><span class="selo lac">Lacuna</span> <b>Para analisar os aromas com segurança:</b> vendas por aroma e por dia (o relatório de produtos só traz o total do período), estoque inicial e hora de esgotamento. Com esses três dados, a próxima análise consegue separar preferência de disponibilidade.</p>
+</section>
+
+<footer><div class="wrap" style="padding:0">
+  <p><b>Fontes:</b> Magazord — relatórios "Pedidos" (01/11/2026 00h00 a 18/11/2026 08h33), "Itens dos Pedidos" (até 18/11/2026 08h32) e "Produtos Mais Vendidos" (01 a 18/11/2026); Google Analytics 4 da loja, 01 a 17/11/2026; conta de anúncios da Meta da Boom.</p>
+  <p>Novembro está em andamento: os números mudam até o fim do mês. Nenhum dado pessoal de cliente aparece neste relatório. Relatório preparado pela CLK em 18/11/2026.</p>
+</div></footer>
+</div>
+<script>
+(function(){
+  var tip=document.getElementById('tip');
+  function show(g,e){
+    var rows=(g.getAttribute('data-r')||'').split(';').filter(Boolean).map(function(p){var a=p.split('|');return '<div class="row"><span>'+a[0]+'</span><span>'+a[1]+'</span></div>';}).join('');
+    tip.innerHTML='<div class="tt">'+g.getAttribute('data-t')+'</div>'+rows;
+    tip.classList.add('on'); move(e);
+  }
+  function move(e){
+    var t=e.touches?e.touches[0]:e, x=t.clientX+14, y=t.clientY+14, w=tip.offsetWidth, h=tip.offsetHeight;
+    if(x+w>window.innerWidth-8)x=Math.max(8,t.clientX-w-14);
+    if(y+h>window.innerHeight-8)y=Math.max(8,t.clientY-h-14);
+    tip.style.left=x+'px'; tip.style.top=y+'px';
+  }
+  document.querySelectorAll('[data-t]').forEach(function(g){
+    g.addEventListener('mouseenter',function(e){show(g,e);});
+    g.addEventListener('mousemove',move);
+    g.addEventListener('mouseleave',function(){tip.classList.remove('on');});
+    g.addEventListener('click',function(e){show(g,e);});
+  });
+  document.addEventListener('touchstart',function(e){if(!e.target.closest('[data-t]'))tip.classList.remove('on');},{passive:true});
+})();
+</script>
+</body></html>
